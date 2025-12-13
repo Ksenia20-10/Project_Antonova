@@ -3,10 +3,10 @@
 # Использовать локальные переменные.
 def summa():
     total = 0
-    n = 60
-    for i in range(1, n + 1):
+    i = 1
+    while i <= 60:
         total += i
+        i += 1
     return total
 
-itog = summa()
-print(f"Сумма чисел ряда от 1 до 60: {itog}")
+print(f"Сумма чисел ряда от 1 до 60: {summa()}")
