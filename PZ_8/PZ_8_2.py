@@ -7,7 +7,6 @@
 even_dict = {'a': 10, 'b': 20, 'c': 30, 'd': 40}
 
 print("Исходный словарь:", even_dict)
-
 # Функция для подсчета суммы половин
 def sum_of_halves(dictionary):
     items = list(dictionary.values())
