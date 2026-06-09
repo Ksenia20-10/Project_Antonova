@@ -2,7 +2,6 @@
 # Вариант 4
 
 sample_dict = {'Physics': 82, 'Math': 65, 'history': 75}
-
 # Исходный словарь
 print("Исходный словарь:", sample_dict)
 
