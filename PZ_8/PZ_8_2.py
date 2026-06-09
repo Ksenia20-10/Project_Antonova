@@ -15,7 +15,6 @@ def sum_of_halves(dictionary):
     sum_first = sum(items[:mid])
     sum_second = sum(items[mid:])
     return sum_first, sum_second
-
 # Вызов функции
 first_sum, second_sum = sum_of_halves(even_dict)
 
