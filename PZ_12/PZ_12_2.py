@@ -1,6 +1,5 @@
 # 2. Если в матрице имеются положительные элементы, то вывести TRUE, иначе FALSE.
 # Вариант 4.
-# Исходная матрица (можно взять ту же или новую)
 matrix2 = [
     [-5, -2, -3],
     [-1, -4, -6],
@@ -11,8 +10,7 @@ print("Исходная матрица:")
 for row in matrix2:
     print(row)
 
-# Проверяем, есть ли положительные элементы
-has_positive = False  # предположим, что нет
+has_positive = False
 
 for row in matrix2:
     for element in row:
@@ -22,11 +20,9 @@ for row in matrix2:
     if has_positive:
         break
 
-# Выводим результат
 print("\nРезультат проверки наличия положительных элементов:")
-print(has_positive)  # TRUE или FALSE
+print(has_positive)
 
-# Для наглядности - ещё один пример с положительными числами
 print("\n--- Дополнительный пример ---")
 matrix3 = [
     [-1, -2, -3],
