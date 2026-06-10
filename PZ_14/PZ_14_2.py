@@ -27,16 +27,13 @@ def open_word_counter():
             messagebox.showwarning("Ошибка", "Введите предложение!")
             return
 
-        # Убираем знаки препинания и разбиваем на слова
         import re
         words = re.findall(r'\b\w+\b', sentence.lower())
 
-        # Считаем уникальные слова
         word_count = {}
         for word in words:
             word_count[word] = word_count.get(word, 0) + 1
 
-        # Очищаем и выводим результат
         result_text.config(state="normal")
         result_text.delete("1.0", tk.END)
         result_text.insert("1.0", f"Всего слов: {len(words)}\n")
@@ -52,11 +49,8 @@ def open_word_counter():
                           font=("Arial", 11), bg="#2196F3", fg="white", width=15)
     btn_count.pack(pady=5)
 
-
-# Кнопка для открытия дополнительного окна с задачей 2
 btn_task2 = tk.Button(root, text="Подсчёт уникальных слов", command=open_word_counter,
                       font=("Arial", 11), bg="#FF9800", fg="white", width=20)
 btn_task2.pack(pady=10)
 
-# Запуск приложения
 root.mainloop()

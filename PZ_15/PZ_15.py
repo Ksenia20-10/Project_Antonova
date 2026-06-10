@@ -26,7 +26,6 @@ def create_db():
     conn.close()
     print("База данных 'library.db' и таблица 'Каталог' созданы.")
 
-# Добавление данных (10 позиций)
 def add_book(genre, country, series, author, title, year, description):
     """Добавляет книгу в таблицу"""
     conn = sqlite3.connect("library.db")
@@ -64,8 +63,6 @@ def add_sample_books():
         add_book(*book)
     print("\n--- Добавлено 10 книг ---\n")
 
-# Вывод всех книг
-
 def show_all_books():
     """Выводит все книги из таблицы"""
     conn = sqlite3.connect("library.db")
@@ -87,7 +84,6 @@ def show_all_books():
         print(f"Код: {book[0]} | {book[3]} - '{book[4]}' ({book[5]} г.) | Жанр: {book[1]} | Страна: {book[2]}")
     print("=" * 80 + "\n")
 
-# Поиск(3 разных условия)
 def search_by_author(author):
     """Поиск книг по автору"""
     conn = sqlite3.connect("library.db")
@@ -132,7 +128,6 @@ def search_by_genre(genre):
         print(f"  {book[3]} - '{book[4]}' ({book[5]} г.)")
     return results
 
-# Удаление (3 разных условия)
 def delete_by_code(book_code):
     """Удаление книги по коду"""
     conn = sqlite3.connect("library.db")
@@ -174,7 +169,6 @@ def delete_old_books(year):
     print(f"Удалено книг, изданных до {year} года: {deleted}")
     return deleted
 
-# Редактирование (3 разных условия)
 def update_genre(book_code, new_genre):
     """Изменить жанр книги по коду"""
     conn = sqlite3.connect("library.db")
@@ -187,7 +181,6 @@ def update_genre(book_code, new_genre):
 
     print(f"Изменён жанр книги {book_code} на '{new_genre}': {updated}")
     return updated
-
 
 def update_year_by_author(author, new_year):
     """Изменить год выпуска всех книг автора"""
@@ -221,23 +214,18 @@ def add_to_description(book_code, additional_text):
 
     conn.close()
 
-# Главная функция
 def main():
     print("=" * 60)
     print("ПРИЛОЖЕНИЕ 'БИБЛИОТЕКА'")
     print("Работа с базой данных SQLite")
     print("=" * 60 + "\n")
 
-    # Создаём БД
     create_db()
 
-    # Добавляем образцы книг
     add_sample_books()
 
-    # Показываем все книги
     show_all_books()
 
-    # ---------- Поиск (3 условия) ----------
     print("\n" + "=" * 40)
     print("ПОИСК КНИГ")
     print("=" * 40)
@@ -245,7 +233,6 @@ def main():
     search_by_year(1954)
     search_by_genre("Детектив")
 
-    # ---------- Редактирование (3 условия) ----------
     print("\n" + "=" * 40)
     print("РЕДАКТИРОВАНИЕ КНИГ")
     print("=" * 40)
@@ -253,10 +240,8 @@ def main():
     update_year_by_author("Лем", 1962)
     add_to_description(3, "Классика научной фантастики.")
 
-    # Показываем изменения
     show_all_books()
 
-    # ---------- Удаление (3 условия) ----------
     print("\n" + "=" * 40)
     print("УДАЛЕНИЕ КНИГ")
     print("=" * 40)
@@ -264,14 +249,11 @@ def main():
     delete_by_author("Хемингуэй")
     delete_old_books(1900)
 
-    # Показываем финальный результат
     show_all_books()
 
     print("\n" + "=" * 40)
     print("Работа программы завершена.")
     print("=" * 40)
 
-
-# Запуск программы
 if __name__ == "__main__":
     main()

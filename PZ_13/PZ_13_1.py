@@ -5,8 +5,6 @@
 
 import re
 
-# создаём пример файла hotline.txt
-
 hotline_content = """Горячая линия: 8(800)123-45-67
 Телефон доверия: 8(495)123-45-67
 Горячая линия ЕГЭ: 8(800)555-03-50
@@ -18,34 +16,27 @@ hotline_content = """Горячая линия: 8(800)123-45-67
 Горячая линия ЕГЭ: 8(800)444-55-03
 """
 
-# Создаём файл
 with open("hotline.txt", "w", encoding="UTF-8") as f:
     f.write(hotline_content)
 
-print("=== Создан файл hotline.txt ===")
+print(" Создан файл hotline.txt ")
 print()
 
-# Читаем исходный файл
 with open("hotline.txt", "r", encoding="UTF-8") as f:
     content = f.read()
 
-# Считаем, сколько раз встречается фраза "Горячая линия"
 count_before = len(re.findall(r"Горячая линия", content))
 print(f"Количество фраз 'Горячая линия' до добавления: {count_before}")
 
-# Добавляем фразу после каждого "Горячая линия"
-# Используем регулярное выражение для замены
 new_content = re.sub(
     r"(Горячая линия)",
     r"\1 Министерства образования Ростовской области",
     content
 )
 
-# Считаем, сколько добавлений сделано
 count_after = len(re.findall(r"Горячая линия Министерства образования Ростовской области", new_content))
 print(f"Количество добавлений: {count_after}")
 
-# Записываем в новый файл
 with open("hotline_new.txt", "w", encoding="UTF-8") as f:
     f.write(new_content)
 
