@@ -1,259 +1,114 @@
 # Вариант 4
 # Работа с базой данных. Приложение "Библиотека"
+# Вариант 4
+# Работа с базой данных. Приложение "Библиотека"
+import sqlite3 as sq
 
-import sqlite3
-from datetime import datetime
-# Cоздание бд и табл
-def create_db():
-    """Создаёт базу данных и таблицу 'Каталог'"""
-    conn = sqlite3.connect("library.db")
-    cursor = conn.cursor()
+# Данные для заполнения таблицы
+books_data = [
+    (1, 'Роман', 'Россия', 'Русская классика', 'Достоевский Ф.М.', 'Преступление и наказание', 1866, 'Роман о преступлении и наказании'),
+    (2, 'Фантастика', 'США', 'Научная фантастика', 'Азимов А.', 'Основание', 1951, 'Цикл о Галактической империи'),
+    (3, 'Детектив', 'Англия', 'Классический детектив', 'Дойл А.К.', 'Шерлок Холмс', 1892, 'Сборник рассказов о знаменитом сыщике'),
+    (4, 'Поэзия', 'Россия', 'Золотой век', 'Пушкин А.С.', 'Евгений Онегин', 1833, 'Роман в стихах'),
+    (5, 'Фэнтези', 'Англия', 'Легендарное фэнтези', 'Толкин Дж.Р.Р.', 'Властелин колец', 1954, 'Эпическая сага о борьбе добра со злом'),
+    (6, 'Роман', 'Франция', 'Зарубежная классика', 'Гюго В.', 'Отверженные', 1862, 'Роман о французском обществе'),
+    (7, 'Детектив', 'Швеция', 'Скандинавский детектив', 'Ларссон С.', 'Девушка с татуировкой дракона', 2005, 'Триллер о журналистском расследовании'),
+    (8, 'Фантастика', 'Англия', 'Киберпанк', 'Гибсон У.', 'Нейромант', 1984, 'Классика киберпанка'),
+    (9, 'Роман', 'США', 'Американская литература', 'Хемингуэй Э.', 'Старик и море', 1952, 'Повесть о борьбе и достоинстве'),
+    (10, 'Поэзия', 'Россия', 'Серебряный век', 'Блок А.А.', 'Двенадцать', 1918, 'Поэма о революции')
+]
 
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS Каталог (
-            Код_книги INTEGER PRIMARY KEY AUTOINCREMENT,
-            Жанр TEXT,
-            Страна_издания TEXT,
-            Серия TEXT,
-            Автор TEXT,
-            Название_книги TEXT,
-            Год_выпуска INTEGER,
-            Аннотация TEXT
-        )
-    ''')
+with sq.connect('library.db') as con:
+    cursor = con.cursor()
 
-    conn.commit()
-    conn.close()
-    print("База данных 'library.db' и таблица 'Каталог' созданы.")
+    # Создание таблицы
+    cursor.execute("DROP TABLE IF EXISTS Каталог")
+    cursor.execute("""CREATE TABLE IF NOT EXISTS Каталог (
+        Код_книги INTEGER PRIMARY KEY,
+        Жанр TEXT,
+        Страна_издания TEXT,
+        Серия TEXT,
+        Автор TEXT,
+        Название_книги TEXT,
+        Год_выпуска INTEGER,
+        Аннотация TEXT
+    )""")
 
-def add_book(genre, country, series, author, title, year, description):
-    """Добавляет книгу в таблицу"""
-    conn = sqlite3.connect("library.db")
-    cursor = conn.cursor()
+    # Заполнение таблицы
+    cursor.executemany("INSERT INTO Каталог VALUES (?, ?, ?, ?, ?, ?, ?, ?)", books_data)
 
-    cursor.execute('''
-        INSERT INTO Каталог (Жанр, Страна_издания, Серия, Автор, Название_книги, Год_выпуска, Аннотация)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    ''', (genre, country, series, author, title, year, description))
+    def print_table(title_text):
+        """Функция для вывода таблицы"""
+        print('\n')
+        print(title_text)
+        print(f"{'Код':<6} {'Название книги':<30} {'Автор':<25} {'Жанр':<15} {'Год':<8}")
+        cursor.execute("SELECT Код_книги, Название_книги, Автор, Жанр, Год_выпуска FROM Каталог")
+        for row in cursor.fetchall():
+            kod, name, author, genre, year = row
+            print(f"{kod:<6} {name:<30} {author:<25} {genre:<15} {year:<8}")
 
-    conn.commit()
-    conn.close()
-    print(f"Книга '{title}' добавлена.")
+    print_table("Исходное содержимое таблицы Каталог")
 
+    print("\n")
+    print("ОПЕРАЦИИ ПОИСКА")
 
-def add_sample_books():
-    """Добавляет 10 книг для примера"""
-    books = [
-        ("Роман", "Россия", "Русская классика", "Достоевский Ф.М.", "Преступление и наказание", 1866,
-         "Роман о теории и морали"),
-        ("Роман", "Россия", "Русская классика", "Толстой Л.Н.", "Война и мир", 1869, "Эпопея о войне 1812 года"),
-        ("Фантастика", "Англия", "Космическая опера", "Лем С.", "Солярис", 1961, "Психологическая фантастика"),
-        ("Детектив", "Англия", "Шерлок Холмс", "Дойл А.К.", "Собака Баскервилей", 1902, "Мистический детектив"),
-        ("Поэзия", "Россия", "Серебряный век", "Есенин С.А.", "Черный человек", 1925, "Поэма-исповедь"),
-        ("Фэнтези", "Англия", "Властелин колец", "Толкин Дж.Р.Р.", "Братство кольца", 1954,
-         "Начало эпического путешествия"),
-        ("Роман", "Франция", "Зарубежная классика", "Дюма А.", "Граф Монте-Кристо", 1844, "Роман о мести и прощении"),
-        ("Научпоп", "Россия", "Наука", "Хокинг С.", "Краткая история времени", 1988, "О космологии для всех"),
-        ("Детектив", "Швеция", "Миллениум", "Ларссон С.", "Девушка с татуировкой дракона", 2005,
-         "Триллер о журналистском расследовании"),
-        ("Роман", "США", "Американская проза", "Хемингуэй Э.", "Старик и море", 1952, "Повесть о борьбе и достоинстве"),
-    ]
+    print("\n1. Поиск книг жанра 'Роман':")
+    cursor.execute("SELECT Название_книги, Автор, Год_выпуска FROM Каталог WHERE Жанр = 'Роман'")
+    for row in cursor.fetchall():
+        print(f"   - {row[0]} - {row[1]} ({row[2]})")
 
-    for book in books:
-        add_book(*book)
-    print("\n--- Добавлено 10 книг ---\n")
+    print("\n2. Поиск книг, выпущенных после 1900 года:")
+    cursor.execute("SELECT Название_книги, Автор, Год_выпуска FROM Каталог WHERE Год_выпуска > 1900")
+    for row in cursor.fetchall():
+        print(f"   - {row[0]} - {row[1]} ({row[2]})")
 
-def show_all_books():
-    """Выводит все книги из таблицы"""
-    conn = sqlite3.connect("library.db")
-    cursor = conn.cursor()
+    print("\n3. Поиск книг, изданных в России:")
+    cursor.execute("SELECT Название_книги, Автор, Страна_издания FROM Каталог WHERE Страна_издания = 'Россия'")
+    for row in cursor.fetchall():
+        print(f"   - {row[0]} - {row[1]} ({row[2]})")
 
-    cursor.execute("SELECT * FROM Каталог")
-    books = cursor.fetchall()
+    print("\n")
+    print("ОПЕРАЦИИ РЕДАКТИРОВАНИЯ")
 
-    conn.close()
+    cursor.execute("UPDATE Каталог SET Жанр = 'Классика' WHERE Жанр = 'Роман'")
+    print("\n1. Жанр 'Роман' изменен на 'Классика'")
 
-    if not books:
-        print("Таблица пуста.")
-        return
+    cursor.execute("UPDATE Каталог SET Год_выпуска = 2000 WHERE Автор LIKE '%Ларссон%'")
+    print("2. Год выпуска книги Ларссона изменен на 2000")
 
-    print("\n" + "=" * 80)
-    print("СПИСОК ВСЕХ КНИГ:")
-    print("=" * 80)
-    for book in books:
-        print(f"Код: {book[0]} | {book[3]} - '{book[4]}' ({book[5]} г.) | Жанр: {book[1]} | Страна: {book[2]}")
-    print("=" * 80 + "\n")
+    cursor.execute("UPDATE Каталог SET Аннотация = Аннотация || ' (бестселлер)' WHERE Год_выпуска > 2000")
+    print("3. К аннотациям книг после 2000 года добавлено '(бестселлер)'")
 
-def search_by_author(author):
-    """Поиск книг по автору"""
-    conn = sqlite3.connect("library.db")
-    cursor = conn.cursor()
+    print_table("Таблица после проведения 3-х операций редактирования")
 
-    cursor.execute("SELECT * FROM Каталог WHERE Автор LIKE ?", (f"%{author}%",))
-    results = cursor.fetchall()
-    conn.close()
+    print("\n")
+    print("ОПЕРАЦИИ УДАЛЕНИЯ")
 
-    print(f"\n--- Поиск по автору '{author}': найдено {len(results)} книг ---")
-    for book in results:
-        print(f"  {book[3]} - '{book[4]}' ({book[5]} г.)")
-    return results
+    cursor.execute("DELETE FROM Каталог WHERE Код_книги = 10")
+    print("\n1. Удалена книга с кодом 10")
 
+    cursor.execute("DELETE FROM Каталог WHERE Жанр = 'Поэзия'")
+    print("2. Удалены книги жанра 'Поэзия'")
 
-def search_by_year(year):
-    """Поиск книг по году выпуска"""
-    conn = sqlite3.connect("library.db")
-    cursor = conn.cursor()
+    cursor.execute("DELETE FROM Каталог WHERE Год_выпуска < 1900")
+    print("3. Удалены книги, выпущенные до 1900 года")
 
-    cursor.execute("SELECT * FROM Каталог WHERE Год_выпуска = ?", (year,))
-    results = cursor.fetchall()
-    conn.close()
+    print_table("Итоговая таблица после проведения 3-х операций удаления")
 
-    print(f"\n--- Поиск по году '{year}': найдено {len(results)} книг ---")
-    for book in results:
-        print(f"  {book[3]} - '{book[4]}'")
-    return results
+    print("\n")
+    print("СТАТИСТИКА ПО ЖАНРАМ")
+    cursor.execute("""
+        SELECT Жанр, 
+               COUNT(*) as count_books, 
+               AVG(Год_выпуска) as avg_year,
+               MIN(Год_выпуска) as min_year,
+               MAX(Год_выпуска) as max_year
+        FROM Каталог 
+        GROUP BY Жанр
+        ORDER BY count_books DESC
+    """)
 
-
-def search_by_genre(genre):
-    """Поиск книг по жанру"""
-    conn = sqlite3.connect("library.db")
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT * FROM Каталог WHERE Жанр LIKE ?", (f"%{genre}%",))
-    results = cursor.fetchall()
-    conn.close()
-
-    print(f"\n--- Поиск по жанру '{genre}': найдено {len(results)} книг ---")
-    for book in results:
-        print(f"  {book[3]} - '{book[4]}' ({book[5]} г.)")
-    return results
-
-def delete_by_code(book_code):
-    """Удаление книги по коду"""
-    conn = sqlite3.connect("library.db")
-    cursor = conn.cursor()
-
-    cursor.execute("DELETE FROM Каталог WHERE Код_книги = ?", (book_code,))
-    conn.commit()
-    deleted = cursor.rowcount
-    conn.close()
-
-    print(f"Удалено книг по коду {book_code}: {deleted}")
-    return deleted
-
-
-def delete_by_author(author):
-    """Удаление всех книг автора"""
-    conn = sqlite3.connect("library.db")
-    cursor = conn.cursor()
-
-    cursor.execute("DELETE FROM Каталог WHERE Автор LIKE ?", (f"%{author}%",))
-    conn.commit()
-    deleted = cursor.rowcount
-    conn.close()
-
-    print(f"Удалено книг автора '{author}': {deleted}")
-    return deleted
-
-
-def delete_old_books(year):
-    """Удаление книг старше указанного года"""
-    conn = sqlite3.connect("library.db")
-    cursor = conn.cursor()
-
-    cursor.execute("DELETE FROM Каталог WHERE Год_выпуска < ?", (year,))
-    conn.commit()
-    deleted = cursor.rowcount
-    conn.close()
-
-    print(f"Удалено книг, изданных до {year} года: {deleted}")
-    return deleted
-
-def update_genre(book_code, new_genre):
-    """Изменить жанр книги по коду"""
-    conn = sqlite3.connect("library.db")
-    cursor = conn.cursor()
-
-    cursor.execute("UPDATE Каталог SET Жанр = ? WHERE Код_книги = ?", (new_genre, book_code))
-    conn.commit()
-    updated = cursor.rowcount
-    conn.close()
-
-    print(f"Изменён жанр книги {book_code} на '{new_genre}': {updated}")
-    return updated
-
-def update_year_by_author(author, new_year):
-    """Изменить год выпуска всех книг автора"""
-    conn = sqlite3.connect("library.db")
-    cursor = conn.cursor()
-
-    cursor.execute("UPDATE Каталог SET Год_выпуска = ? WHERE Автор LIKE ?", (new_year, f"%{author}%"))
-    conn.commit()
-    updated = cursor.rowcount
-    conn.close()
-
-    print(f"Обновлён год выпуска для книг автора '{author}' на {new_year}: {updated}")
-    return updated
-
-
-def add_to_description(book_code, additional_text):
-    """Добавить текст к аннотации книги"""
-    conn = sqlite3.connect("library.db")
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT Аннотация FROM Каталог WHERE Код_книги = ?", (book_code,))
-    result = cursor.fetchone()
-
-    if result:
-        new_description = result[0] + " " + additional_text if result[0] else additional_text
-        cursor.execute("UPDATE Каталог SET Аннотация = ? WHERE Код_книги = ?", (new_description, book_code))
-        conn.commit()
-        print(f"Аннотация книги {book_code} дополнена.")
-    else:
-        print(f"Книга с кодом {book_code} не найдена.")
-
-    conn.close()
-
-def main():
-    print("=" * 60)
-    print("ПРИЛОЖЕНИЕ 'БИБЛИОТЕКА'")
-    print("Работа с базой данных SQLite")
-    print("=" * 60 + "\n")
-
-    create_db()
-
-    add_sample_books()
-
-    show_all_books()
-
-    print("\n" + "=" * 40)
-    print("ПОИСК КНИГ")
-    print("=" * 40)
-    search_by_author("Достоевский")
-    search_by_year(1954)
-    search_by_genre("Детектив")
-
-    print("\n" + "=" * 40)
-    print("РЕДАКТИРОВАНИЕ КНИГ")
-    print("=" * 40)
-    update_genre(1, "Психологический роман")
-    update_year_by_author("Лем", 1962)
-    add_to_description(3, "Классика научной фантастики.")
-
-    show_all_books()
-
-    print("\n" + "=" * 40)
-    print("УДАЛЕНИЕ КНИГ")
-    print("=" * 40)
-    delete_by_code(10)
-    delete_by_author("Хемингуэй")
-    delete_old_books(1900)
-
-    show_all_books()
-
-    print("\n" + "=" * 40)
-    print("Работа программы завершена.")
-    print("=" * 40)
-
-if __name__ == "__main__":
-    main()
+    print(f"{'Жанр':<15} {'Кол-во книг':<15} {'Ср. год':<15} {'Мин. год':<15} {'Макс. год':<15}")
+    for row in cursor.fetchall():
+        genre, count_books, avg_year, min_year, max_year = row
+        print(f"{genre:<15} {count_books:<15} {avg_year:<15.0f} {min_year:<15} {max_year:<15}")

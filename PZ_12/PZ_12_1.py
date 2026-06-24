@@ -6,19 +6,15 @@ matrix = [
     [4, 5, 6],
     [7, 8, 9]
 ]
+
 print("Исходная матрица:")
-for row in matrix:
-    print(row)
+print('\n'.join(map(lambda row: str(row), matrix)))
 
 size = len(matrix)
-
-for i in range(size):
-    for j in range(size):
-        if i != j:
-            matrix[i][j] *= 2
+new_matrix = [
+    [matrix[i][j] * 2 if i != j else matrix[i][j] for j in range(size)]
+    for i in range(size)
+]
 
 print("\nМатрица после преобразования:")
-for row in matrix:
-    print(row)
-
-print()
+print('\n'.join(map(lambda row: str(row), new_matrix)))

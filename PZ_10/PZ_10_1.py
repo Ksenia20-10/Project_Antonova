@@ -8,30 +8,37 @@
 # Минимальный элемент:
 # Элементы, умноженные на первый максимальный элемент:
 
-numbers = [-15, 3, 8, -4, 12, 10, -7, 5]
+import random
 
-f1 = open("numbers_4.txt", "w", encoding="UTF-8")
-f1.write(" ".join(map(str, numbers)))
-f1.close()
+numbers = [random.randint(-50, 50) for _ in range(20)]
 
-f1 = open("numbers_4.txt", "r", encoding="UTF-8")
-data = f1.read()
-f1.close()
+with open('data_1.txt', 'w', encoding='utf-8') as f:
+    f.write(' '.join(map(str, numbers)))
 
-num_list = list(map(int, data.split()))
 
-max_first = max(num_list)
+with open('data_1.txt', 'r', encoding='utf-8') as f:
+    numbers_str = f.read()
+    numbers_list = list(map(int, numbers_str.split()))
 
-min_elem = min(num_list)
+count = len(numbers_list)
+min_element = min(numbers_list)
 
-multiplied = [x * max_first for x in num_list]
+first_max = max(numbers_list)
+first_max_index = numbers_list.index(first_max)
 
-f2 = open("result_4.txt", "w", encoding="UTF-8")
-f2.write("Исходные данные: " + " ".join(map(str, num_list)) + "\n")
-f2.write("Количество элементов: " + str(len(num_list)) + "\n")
-f2.write("Минимальный элемент: " + str(min_elem) + "\n")
-f2.write("Элементы, умноженные на первый максимальный элемент (" + str(max_first) + "): " + " ".join(map(str, multiplied)) + "\n")
-f2.close()
+multiplied_elements = [x * first_max for x in numbers_list]
 
-print("Создан файл: result_4.txt")
-print()
+with open('data_1_result.txt', 'w', encoding='utf-8') as f:
+    f.write("Исходные данные:\n")
+    f.write(' '.join(map(str, numbers_list)) + "\n\n")
+    f.write(f"Количество элементов: {count}\n")
+    f.write(f"Минимальный элемент: {min_element}\n")
+    f.write(f"Первый максимальный элемент: {first_max}\n")
+    f.write(f"Элементы, умноженные на первый максимальный элемент:\n")
+    f.write(' '.join(map(str, multiplied_elements)) + "\n")
+
+print(f"\nРезультаты сохранены в файл 'data_1_result.txt'")
+print(f"Количество элементов: {count}")
+print(f"Минимальный элемент: {min_element}")
+print(f"Первый максимальный элемент: {first_max}")
+print(f"Элементы, умноженные на {first_max}: {multiplied_elements[:5]}...")  # показываем первые 5

@@ -3,44 +3,42 @@
 # количество символов, принадлежащих к группе букв. Сформировать новый файл, в
 # который поместить текст в стихотворной форме предварительно заменив символы верхнего
 # регистра на нижний.
+content = None
 
 try:
-    f = open("text18-4.txt", "r", encoding="UTF-8")
-    f.close()
-except FileNotFoundError:
-    # Создаём пример файла
-    f = open("text18-4.txt", "w", encoding="UTF-8")
-    f.write("Привет Мир\n")
-    f.write("Как Дела?\n")
-    f.write("Это Тестовый Файл\n")
-    f.write("Для Проверки\n")
-    f.close()
-    print("Создан пример файла text18-4.txt")
+    with open('text18-4.txt', 'r', encoding='utf-8') as file:
+        content = file.read()
+    used_encoding = 'utf-8'
+except:
+    try:
+        with open('text18-4.txt', 'r', encoding='utf-8') as file:
+            content = file.read()
+        used_encoding = 'utf-8'
+    except:
+        try:
+            with open('text18-4.txt', 'r', encoding='latin-1') as file:
+                content = file.read()
+            used_encoding = 'latin-1'
+        except:
+            print("Ошибка: не удалось прочитать файл text18-4.txt")
+            exit()
 
-f = open("text18-4.txt", "r", encoding="UTF-8")
-lines = f.readlines()
-f.close()
+print(f"\nФайл прочитан в кодировке: {used_encoding}")
+print("\nСодержимое файла text18-4.txt \n")
+print(content)
 
-print("Содержимое файла text18-4.txt:")
-print("-" * 30)
+letters_count = 0
+for char in content:
+    if char.isalpha():
+        letters_count += 1
 
-total_letters = 0
+print(f"\nКоличество букв в файле: {letters_count}")
 
-for line in lines:
-    print(line.rstrip())
+lowercase_content = content.lower()
 
-    for ch in line:
-        if ch.isalpha():
-            total_letters += 1
+with open('text18-4_new.txt', 'w', encoding='utf-8') as new_file:
+    new_file.write(lowercase_content)
 
-print("-" * 30)
-print("Количество букв в файле:", total_letters)
-
-f_new = open("text18-4_new.txt", "w", encoding="UTF-8")
-
-for line in lines:
-    f_new.write(line.lower())
-
-f_new.close()
-
-print("\nСоздан файл: text18-4_new.txt (все буквы в нижнем регистре)")
+print("\nСоздан новый файл 'text18-4_new.txt' (все буквы в нижнем регистре)")
+print("\n Содержимое нового файла \n")
+print(lowercase_content)
